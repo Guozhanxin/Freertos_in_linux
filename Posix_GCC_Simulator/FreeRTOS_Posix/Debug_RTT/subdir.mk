@@ -17,7 +17,9 @@ C_DEPS += $(patsubst %.c, ./study_demo/%.d, $(notdir ${C_SRCS}))
 	-I.. \
 	-I../RT-Thread_Kernel/include \
 	-I../RT-Thread_Kernel/board \
-	-O0 -g -Wall -c -fmessage-length=0 -pthread -lrt -Wno-pointer-sign -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	-I../RT-Thread_Kernel/components/finsh \
+	-I../RT-Thread_Kernel/components/drivers/include \
+	-O0 -g -Wall -c -fmessage-length=0 -pthread -lrt -T gcc.ld -Wno-pointer-sign -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

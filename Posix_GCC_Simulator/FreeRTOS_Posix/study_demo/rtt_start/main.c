@@ -21,9 +21,13 @@ void main_thread_entry(void *parameter)
     rt_components_init();
 #endif /* RT_USING_COMPONENTS_INIT */
 
+#ifdef RT_USING_MSH
+int finsh_system_init(void);
+  finsh_system_init();
+#endif
     while(1)
     {
-        rt_kprintf("test2:%d\n",12);
+        // rt_kprintf("test2:%d\n",12);
         rt_thread_delay(100);
     }
 

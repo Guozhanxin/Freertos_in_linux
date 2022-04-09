@@ -13,15 +13,15 @@
 #include <stdlib.h>
 
 #include "board.h"
-// #include "uart_console.h"
+#include "uart_console.h"
 
 /**
  * @addtogroup simulator on win32
  */
-void rt_hw_console_output(const char *str)
-{
-    printf("%s", str);
-}
+// void rt_hw_console_output(const char *str)
+// {
+//     printf("%s", str);
+// }
 rt_uint8_t *rt_hw_sram_init(void)
 {
     rt_uint8_t *heap;
@@ -98,7 +98,7 @@ int rt_hw_board_init(void)
     /* init system memory */
     rt_hw_sram_init();
 
-    // uart_console_init();
+    uart_console_init();
 
 #ifdef _WIN32
     rt_thread_idle_sethook(rt_hw_win32_low_cpu);

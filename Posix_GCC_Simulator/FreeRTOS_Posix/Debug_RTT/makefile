@@ -12,6 +12,9 @@ RM := rm -rf
 -include RT-Thread_Kernel/src/subdir.mk
 -include RT-Thread_Kernel/libcpu/sim/posix/subdir.mk
 -include RT-Thread_Kernel/board/subdir.mk
+-include RT-Thread_Kernel/components/finsh/subdir.mk
+-include RT-Thread_Kernel/components/drivers/ipc/subdir.mk
+-include RT-Thread_Kernel/components/drivers/serial/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -31,7 +34,7 @@ all: FreeRTOS_Posix
 FreeRTOS_Posix: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -pthread -lrt -o"FreeRTOS_Posix" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -pthread -lrt -T gcc.ld -o"FreeRTOS_Posix" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

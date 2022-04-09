@@ -17,5 +17,8 @@ SUBDIRS := \
 RT-Thread_Kernel/src \
 RT-Thread_Kernel/libcpu/sim/posix \
 RT-Thread_Kernel/board \
+RT-Thread_Kernel/components/finsh \
+RT-Thread_Kernel/components/drivers/ipc \
+RT-Thread_Kernel/components/drivers/serial \
 study_demo/${APP_NAME} \
 
