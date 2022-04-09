@@ -1,5 +1,61 @@
 #include <rtthread.h>
 #include "board.h"
+
+#ifndef RT_USING_HEAP
+/* if there is not enable heap, we should use static thread and stack. */
+ALIGN(8)
+static rt_uint8_t main_stack[RT_MAIN_THREAD_STACK_SIZE];
+struct rt_thread main_thread;
+#endif /* RT_USING_HEAP */
+
+/**
+ * @brief  The system main thread. In this thread will call the rt_components_init()
+ *         for initialization of RT-Thread Components and call the user's programming
+ *         entry main().
+ */
+void main_thread_entry(void *parameter)
+{
+    rt_kprintf("main thread run...\n");
+#ifdef RT_USING_COMPONENTS_INIT
+    /* RT-Thread components initialization */
+    rt_components_init();
+#endif /* RT_USING_COMPONENTS_INIT */
+
+    while(1)
+    {
+        rt_kprintf("test2:%d\n",12);
+        rt_thread_delay(100);
+    }
+
+}
+
+/**
+ * @brief  This function will create and start the main thread, but this thread
+ *         will not run until the scheduler starts.
+ */
+void rt_application_init(void)
+{
+    rt_thread_t tid;
+
+#ifdef RT_USING_HEAP
+    tid = rt_thread_create("main", main_thread_entry, RT_NULL,
+                           RT_MAIN_THREAD_STACK_SIZE, RT_MAIN_THREAD_PRIORITY, 20);
+    RT_ASSERT(tid != RT_NULL);
+#else
+    rt_err_t result;
+
+    tid = &main_thread;
+    result = rt_thread_init(tid, "main", main_thread_entry, RT_NULL,
+                            main_stack, sizeof(main_stack), RT_MAIN_THREAD_PRIORITY, 20);
+    RT_ASSERT(result == RT_EOK);
+
+    /* if not define RT_USING_HEAP, using to eliminate the warning */
+    (void)result;
+#endif /* RT_USING_HEAP */
+
+    rt_thread_startup(tid);
+}
+
 /**
  * @brief  This function will call all levels of initialization functions to complete
  *         the initialization of the system, and finally start the scheduler.
@@ -31,7 +87,7 @@ int rtthread_startup(void)
 #endif /* RT_USING_SIGNALS */
 
     /* create init_thread */
-    // rt_application_init();
+    rt_application_init();
 
     rt_kprintf("rt_system_timer_thread_init ...\n");
     /* timer thread initialization */
@@ -62,11 +118,7 @@ int main(void)
     
     printf("Hello RT-Thread\n");
 
-    printf("test2:%d\n",12);
-    while(1)
-    {
-      // rt_thread_delay(100);
-    }
+
     return 0;
 }
 
