@@ -14,8 +14,8 @@ EXECUTABLES :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
-FreeRTOS_Kernel \
-FreeRTOS_Kernel/portable/MemMang \
-FreeRTOS_Kernel/portable/GCC/Posix \
+RT-Thread_Kernel \
+RT-Thread_Kernel/portable/MemMang \
+RT-Thread_Kernel/portable/GCC/Posix \
 study_demo/${APP_NAME} \
 
