@@ -1,62 +1,72 @@
-
-#include "FreeRTOS.h"
-#include "task.h"
-
-#include "config.h"
-
-static TaskHandle_t xTask_creat = NULL;
-
-static void creat_task(void *p)
+#include <rtthread.h>
+#include "board.h"
+/**
+ * @brief  This function will call all levels of initialization functions to complete
+ *         the initialization of the system, and finally start the scheduler.
+ */
+int rtthread_startup(void)
 {
-    os_printf("%s", __FUNCTION__);
-    int cnt = 0;
+    rt_hw_interrupt_disable();
 
-    /* creat app task in this 在这里创建应用任务 */
-    taskENTER_CRITICAL();
+    /* board level initialization
+     * NOTE: please initialize heap inside board initialization.
+     */
+    rt_hw_board_init();
 
-    taskEXIT_CRITICAL();
+    /* show RT-Thread version */
+    rt_show_version();
 
-    /* creat app task in this 在这里创建应用任务 */
 
-    /* delay task 延时退出，并删除本任务 */
-    while(1){
-        os_printf("this is creat task:idle-%d", cnt++);
-        vTaskDelay(1000);
+    rt_kprintf("rt_system_timer_init ...\n");
+    /* timer system initialization */
+    rt_system_timer_init();
 
-        if (cnt >= 10){
-            break;
-        }
-    }
+    rt_kprintf("rt_system_scheduler_init ...\n");
+    /* scheduler system initialization */
+    rt_system_scheduler_init();
 
-    os_printf("delete creat task");
+#ifdef RT_USING_SIGNALS
+    /* signal system initialization */
+    rt_system_signal_init();
+#endif /* RT_USING_SIGNALS */
 
-    vTaskDelete(xTask_creat);
+    /* create init_thread */
+    // rt_application_init();
+
+    rt_kprintf("rt_system_timer_thread_init ...\n");
+    /* timer thread initialization */
+    rt_system_timer_thread_init();
+
+    rt_kprintf("rt_thread_idle_init ...\n");
+    /* idle thread initialization */
+    rt_thread_idle_init();
+
+#ifdef RT_USING_SMP
+    rt_hw_spin_lock(&_cpus_lock);
+#endif /* RT_USING_SMP */
+
+    /* start scheduler */
+    rt_system_scheduler_start();
+
+    /* never reach here */
+    return 0;
 }
+
+#include <stdio.h>
+// #include <rtthread.h>
 
 int main(void)
 {
-    BaseType_t xReturn = pdPASS;
+    rt_hw_interrupt_disable();
+    rtthread_startup();
+    
+    printf("Hello RT-Thread\n");
 
-    os_printf("Freertos v10.2.1 start ");
-
-    /* first creat task in this 创建rtos第一个任务，用于创建其他任务 */
-    xReturn = xTaskCreate(  (TaskFunction_t )creat_task,
-                            (const char *   )"creat_task",
-                            (unsigned short )128,
-                            (void *         )NULL,
-                            (UBaseType_t    )1,
-                            (TaskHandle_t * )&xTask_creat);
-
-    if (pdPASS != xReturn){
-        return -1;
+    printf("test2:%d\n",12);
+    while(1)
+    {
+      // rt_thread_delay(100);
     }
-
-    /* start task 开启任务调度 */
-    vTaskStartScheduler();
-
-    while(1){
-    }
-
     return 0;
 }
 

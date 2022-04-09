@@ -9,9 +9,9 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
--include RT-Thread_Kernel/subdir.mk
--include RT-Thread_Kernel/portable/MemMang/subdir.mk
--include RT-Thread_Kernel/portable/GCC/Posix/subdir.mk
+-include RT-Thread_Kernel/src/subdir.mk
+-include RT-Thread_Kernel/libcpu/sim/posix/subdir.mk
+-include RT-Thread_Kernel/board/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

@@ -14,8 +14,8 @@ EXECUTABLES :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
-RT-Thread_Kernel \
-RT-Thread_Kernel/portable/MemMang \
-RT-Thread_Kernel/portable/GCC/Posix \
+RT-Thread_Kernel/src \
+RT-Thread_Kernel/libcpu/sim/posix \
+RT-Thread_Kernel/board \
 study_demo/${APP_NAME} \
 
